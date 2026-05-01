@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>NØVA — Premium Food Experience</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #0A0A0F; --bg2: #0F0F18; --bg3: #13131E;
+  --glass: rgba(255,255,255,0.04); --glass2: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08); --border-glow: rgba(168,85,247,0.35);
+  --purple: #A855F7; --purple-dim: rgba(168,85,247,0.15);
+  --orange: #F97316; --orange-dim: rgba(249,115,22,0.15);
+  --gold: #EAB308; --gold-dim: rgba(234,179,8,0.15);
+  --text: #F1F0FF; --text2: rgba(241,240,255,0.6); --text3: rgba(241,240,255,0.35);
+  --r-sm: 12px; --r-md: 18px; --r-lg: 24px; --r-xl: 32px;
+  --green: #22c55e; --red: #ef4444;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+a { text-decoration: none; color: inherit; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--purple-dim); border-radius: 99px; }
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 999; opacity: 0.4;
+}
+
+/* ── CUSTOMER GATE OVERLAY ── */
+.customer-gate {
+  position: fixed; inset: 0; background: var(--bg);
+  z-index: 1000; display: flex; align-items: center; justify-content: center;
+  padding: 24px; opacity: 1; transition: opacity 0.5s ease;
+}
+.customer-gate.hide { opacity: 0; pointer-events: none; }
+.gate-card {
+  width: 100%; max-width: 380px; background: var(--bg2);
+  border: 1px solid rgba(168,85,247,0.25); border-radius: var(--r-xl);
+  padding: 32px 24px; position: relative; overflow: hidden;
+  box-shadow: 0 24px 80px rgba(168,85,247,0.2), 0 8px 32px rgba(0,0,0,0.5);
+}
+.gate-card::before {
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(168,85,247,0.18), transparent 70%);
+  pointer-events: none;
+}
+.gate-logo {
+  font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800;
+  background: linear-gradient(135deg, #A855F7, #F97316);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  text-align: center; margin-bottom: 6px;
+}
+.gate-subtitle { text-align: center; font-size: 13px; color: var(--text3); margin-bottom: 28px; }
+.gate-welcome { text-align: center; font-size: 20px; font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 6px; }
+.gate-desc { text-align: center; font-size: 13px; color: var(--text2); margin-bottom: 24px; line-height: 1.5; }
+.gate-field { margin-bottom: 14px; }
+.gate-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
+.gate-input {
+  width: 100%; background: var(--glass); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 13px 16px; font-size: 15px;
+  font-family: 'DM Sans', sans-serif; color: var(--text); outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.gate-input::placeholder { color: var(--text3); }
+.gate-input:focus { border-color: var(--border-glow); box-shadow: 0 0 0 3px rgba(168,85,247,0.1); }
+.gate-btn {
+  width: 100%; padding: 16px; border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--purple), #7c3aed); color: #fff;
+  font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; letter-spacing: 0.3px;
+  box-shadow: 0 8px 28px rgba(168,85,247,0.4); transition: all 0.2s; margin-top: 6px;
+}
+.gate-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 36px rgba(168,85,247,0.55); }
+.gate-btn:active { transform: scale(0.97); }
+.gate-table-info {
+  display: flex; align-items: center; gap: 8px; justify-content: center;
+  margin-top: 16px; padding: 10px 16px; background: var(--gold-dim);
+  border: 1px solid rgba(234,179,8,0.25); border-radius: 99px;
+  font-size: 12px; font-weight: 600; color: var(--gold);
+}
+
+/* ── HEADER ── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(10,10,15,0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+}
+.header-logo {
+  font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #A855F7, #F97316);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.header-right { display: flex; align-items: center; gap: 10px; }
+.fb-badge {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 99px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.3px; border: 1px solid;
+  transition: all 0.4s;
+}
+.fb-badge.connecting { background: rgba(234,179,8,0.12); border-color: rgba(234,179,8,0.3); color: var(--gold); }
+.fb-badge.connected  { background: rgba(34,197,94,0.12);  border-color: rgba(34,197,94,0.3);  color: var(--green); }
+.fb-badge.error      { background: rgba(239,68,68,0.12);  border-color: rgba(239,68,68,0.3);  color: var(--red); }
+.fb-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: fb-blink 1.2s infinite; }
+@keyframes fb-blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.header-notif {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--glass2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; font-size: 15px; position: relative;
+}
+.notif-dot {
+  position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--orange); border: 1.5px solid var(--bg); animation: pulse-notif 2s infinite;
+}
+@keyframes pulse-notif { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.3);opacity:0.7} }
+.header-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--orange));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff; border: 2px solid rgba(168,85,247,0.4);
+}
+
+/* ── LOCATION ── */
+.location-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px; background: var(--bg2); border-bottom: 1px solid var(--border);
+}
+.loc-text { font-size: 13px; color: var(--text2); }
+.loc-text strong { color: var(--text); font-weight: 500; }
+.loc-arrow { margin-left: auto; font-size: 12px; color: var(--purple); }
+
+/* ── SEARCH ── */
+.search-wrap { padding: 14px 20px; background: var(--bg2); }
+.search-inner {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 10px 16px; transition: border-color 0.3s, box-shadow 0.3s;
+}
+.search-inner:focus-within { border-color: var(--border-glow); box-shadow: 0 0 0 3px rgba(168,85,247,0.08), 0 0 20px rgba(168,85,247,0.12); }
+.search-icon { font-size: 15px; color: var(--purple); filter: drop-shadow(0 0 6px var(--purple)); flex-shrink: 0; }
+.search-input { flex: 1; border: none; background: transparent; color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; }
+.search-input::placeholder { color: var(--text3); }
+.search-filter { width: 28px; height: 28px; border-radius: 8px; background: var(--purple-dim); border: 1px solid rgba(168,85,247,0.25); display: flex; align-items: center; justify-content: center; font-size: 12px; }
+
+/* ── SEC HEADER ── */
+.sec-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 12px; }
+.sec-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+.sec-link { font-size: 13px; color: var(--purple); }
+
+/* ── ADS CAROUSEL ── */
+.ads-track-wrap { padding: 0 20px 20px; overflow: hidden; }
+.ads-track {
+  display: flex; gap: 14px; overflow-x: auto;
+  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; padding-bottom: 4px;
+}
+.ads-track::-webkit-scrollbar { display: none; }
+.ad-card {
+  flex-shrink: 0; width: calc(100vw - 40px); max-width: 400px; height: 200px;
+  border-radius: var(--r-xl); overflow: hidden; position: relative;
+  scroll-snap-align: start; border: 1px solid rgba(255,255,255,0.06); transition: transform 0.3s; cursor: pointer;
+}
+.ad-card:hover { transform: scale(0.985); }
+.ad-img { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.6s ease; }
+.ad-card:hover .ad-img { transform: scale(1.04); }
+.ad-overlay { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.75) 100%); }
+.ad-badge {
+  position: absolute; top: 14px; right: 14px;
+  background: linear-gradient(135deg, var(--orange), #f59e0b);
+  color: #fff; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 99px;
+  letter-spacing: 0.5px; text-transform: uppercase; box-shadow: 0 0 12px rgba(249,115,22,0.5);
+}
+.ad-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; }
+.ad-name { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; line-height: 1.2; margin-bottom: 4px; }
+.ad-caption { font-size: 12px; color: rgba(255,255,255,0.65); margin-bottom: 8px; }
+.ad-footer { display: flex; align-items: center; gap: 8px; }
+.ad-rating { background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); padding: 3px 8px; border-radius: 99px; font-size: 12px; font-weight: 600; }
+.ad-price { font-size: 13px; font-weight: 600; color: var(--gold); text-shadow: 0 0 10px rgba(234,179,8,0.5); }
+.carousel-dots { display: flex; justify-content: center; gap: 5px; padding: 8px 0 4px; }
+.dot { width: 6px; height: 6px; border-radius: 99px; background: var(--border); transition: all 0.3s ease; }
+.dot.active { width: 18px; background: var(--purple); box-shadow: 0 0 8px var(--purple); }
+
+/* ── OFFERS ── */
+.offers-track { display: flex; gap: 12px; overflow-x: auto; padding: 0 20px 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.offers-track::-webkit-scrollbar { display: none; }
+.offer-card {
+  flex-shrink: 0; width: 150px; border-radius: var(--r-lg);
+  background: var(--glass); border: 1px solid var(--border); overflow: hidden; position: relative;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+}
+.offer-card:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 32px rgba(168,85,247,0.2), 0 0 0 1px var(--border-glow); }
+.offer-img-wrap { height: 110px; overflow: hidden; position: relative; }
+.offer-badge { position: absolute; top: 8px; left: 8px; background: linear-gradient(135deg, var(--red), var(--orange)); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 99px; z-index: 2; box-shadow: 0 2px 8px rgba(239,68,68,0.5); }
+.offer-fire { position: absolute; top: 8px; right: 8px; font-size: 16px; z-index: 2; filter: drop-shadow(0 0 6px rgba(249,115,22,0.8)); animation: fire-wiggle 1.5s ease-in-out infinite; }
+@keyframes fire-wiggle { 0%,100%{transform:rotate(-5deg)} 50%{transform:rotate(5deg)} }
+.offer-info { padding: 10px; }
+.offer-name { font-size: 12px; font-weight: 600; margin-bottom: 4px; line-height: 1.3; }
+.offer-price { font-size: 11px; color: var(--gold); font-weight: 500; }
+
+/* ── PILLS ── */
+.cat-pills { display: flex; gap: 8px; overflow-x: auto; padding: 0 20px 20px; scrollbar-width: none; }
+.cat-pills::-webkit-scrollbar { display: none; }
+.pill {
+  flex-shrink: 0; display: flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 99px; border: 1px solid var(--border);
+  background: var(--glass); font-size: 13px; font-weight: 500; color: var(--text2);
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.pill.active { background: var(--purple-dim); border-color: rgba(168,85,247,0.4); color: var(--purple); box-shadow: 0 0 12px rgba(168,85,247,0.15); }
+.pill:hover:not(.active) { border-color: rgba(255,255,255,0.15); color: var(--text); }
+
+/* ── CATEGORY SECTION ── */
+.cat-section { margin-bottom: 8px; }
+.cat-section-title {
+  font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text2);
+  padding: 0 20px 12px; display: flex; align-items: center; gap: 8px;
+}
+.cat-section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+
+/* ── DISH GRID ── */
+.dish-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 20px 20px; }
+.dish-card {
+  border-radius: var(--r-lg); background: var(--glass); border: 1px solid var(--border);
+  overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.25s, border-color 0.25s; position: relative;
+}
+.dish-card:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(168,85,247,0.2), 0 0 20px rgba(168,85,247,0.08); border-color: rgba(168,85,247,0.2); }
+.dish-card:active { transform: scale(0.97); }
+.dish-img-wrap { height: 120px; position: relative; overflow: hidden; }
+.dish-img-wrap img { transition: transform 0.5s ease; }
+.dish-card:hover .dish-img-wrap img { transform: scale(1.08); }
+.dish-veg-badge {
+  position: absolute; top: 8px; left: 8px; width: 16px; height: 16px; border-radius: 3px; border: 2px solid;
+  display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+}
+.dish-veg-badge.veg { border-color: var(--green); }
+.dish-veg-badge.veg::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.dish-veg-badge.nonveg { border-color: var(--red); }
+.dish-veg-badge.nonveg::after { content: ''; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 7px solid var(--red); border-radius: 1px; }
+.dish-offer-tag { position: absolute; top: 8px; right: 8px; background: linear-gradient(135deg, var(--red), var(--orange)); color: #fff; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 99px; box-shadow: 0 2px 8px rgba(239,68,68,0.4); }
+.dish-info { padding: 10px; }
+.dish-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; line-height: 1.3; }
+.dish-desc { font-size: 11px; color: var(--text3); margin-bottom: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.dish-footer { display: flex; align-items: center; justify-content: space-between; }
+.dish-price { font-size: 14px; font-weight: 700; color: var(--gold); }
+.dish-rating { display: flex; align-items: center; gap: 3px; font-size: 11px; color: var(--text2); }
+.dish-add-btn {
+  width: 26px; height: 26px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--purple), #7c3aed);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: #fff; font-weight: 700;
+  box-shadow: 0 4px 12px rgba(168,85,247,0.4); transition: all 0.2s; flex-shrink: 0;
+}
+.dish-add-btn:hover { transform: scale(1.12); box-shadow: 0 4px 20px rgba(168,85,247,0.6); }
+.stars { display: flex; gap: 1px; }
+.star { font-size: 10px; filter: drop-shadow(0 0 2px rgba(234,179,8,0.6)); }
+.dish-review { padding: 6px 10px 10px; border-top: 1px solid var(--border); }
+.review-text { font-size: 10px; color: var(--text3); font-style: italic; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ── SHIMMER ── */
+.shimmer { background: linear-gradient(90deg, var(--glass) 25%, var(--glass2) 50%, var(--glass) 75%); background-size: 200% 100%; animation: shimmer-anim 1.6s ease infinite; border-radius: 8px; }
+@keyframes shimmer-anim { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.shimmer-card { flex-shrink: 0; width: calc(100vw - 40px); max-width: 400px; height: 200px; border-radius: var(--r-xl); }
+
+/* ── ORDER BTN ── */
+.order-btn-wrap { position: fixed; bottom: 28px; right: 20px; z-index: 200; }
+.order-btn {
+  display: flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 99px;
+  background: linear-gradient(135deg, #EAB308 0%, #F97316 50%, #A855F7 100%);
+  color: #fff; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+  box-shadow: 0 8px 32px rgba(234,179,8,0.3), 0 4px 16px rgba(249,115,22,0.3), 0 0 0 1px rgba(255,255,255,0.1);
+  transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden;
+}
+.order-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent); border-radius: inherit; }
+.order-btn:hover { transform: scale(1.05); }
+.order-btn:active { transform: scale(0.96); }
+.order-btn-pulse { position: absolute; inset: 0; border-radius: inherit; background: inherit; animation: btn-pulse 2s ease-out infinite; z-index: -1; }
+@keyframes btn-pulse { 0%{transform:scale(1);opacity:0.6} 70%{transform:scale(1.18);opacity:0} 100%{transform:scale(1.18);opacity:0} }
+.cart-count { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.25); font-size: 11px; font-weight: 800; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 150;
+  background: rgba(10,10,15,0.92); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid var(--border); display: flex; padding: 8px 0 16px;
+}
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 4px 4px; cursor: pointer; transition: all 0.2s; }
+.nav-icon { font-size: 20px; transition: transform 0.2s; }
+.nav-label { font-size: 10px; font-weight: 500; color: var(--text3); transition: color 0.2s; }
+.nav-item.active .nav-icon { filter: drop-shadow(0 0 8px var(--purple)); transform: translateY(-2px); }
+.nav-item.active .nav-label { color: var(--purple); }
+
+main { padding-bottom: 96px; }
+.divider { height: 8px; background: var(--bg3); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 4px 0; }
+
+/* ── PROMO ── */
+.promo-banner {
+  margin: 0 20px 20px; border-radius: var(--r-lg);
+  background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(249,115,22,0.08));
+  border: 1px solid rgba(168,85,247,0.2); padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px; position: relative; overflow: hidden;
+}
+.promo-banner::before { content: ''; position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(168,85,247,0.12); filter: blur(20px); }
+.promo-icon { font-size: 28px; flex-shrink: 0; }
+.promo-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.promo-sub { font-size: 11px; color: var(--text2); }
+.promo-code { margin-left: auto; flex-shrink: 0; background: rgba(168,85,247,0.15); border: 1px dashed rgba(168,85,247,0.4); border-radius: 8px; padding: 4px 10px; font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 0.5px; cursor: pointer; }
+
+/* ── CHEF PICKS ── */
+.chef-picks { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px; scrollbar-width: none; }
+.chef-picks::-webkit-scrollbar { display: none; }
+.chef-card { flex-shrink: 0; width: 200px; border-radius: var(--r-lg); background: var(--glass); border: 1px solid var(--border); overflow: hidden; cursor: pointer; transition: all 0.25s; }
+.chef-card:hover { transform: translateY(-3px); border-color: rgba(234,179,8,0.3); box-shadow: 0 8px 30px rgba(0,0,0,0.3), 0 0 20px rgba(234,179,8,0.1); }
+.chef-img { height: 130px; overflow: hidden; }
+.chef-info { padding: 12px; }
+.chef-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--gold-dim); border: 1px solid rgba(234,179,8,0.25); border-radius: 99px; padding: 2px 8px; font-size: 10px; font-weight: 600; color: var(--gold); margin-bottom: 6px; }
+.chef-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.chef-footer { display: flex; align-items: center; justify-content: space-between; }
+.chef-price { font-size: 13px; font-weight: 700; color: var(--gold); }
+.chef-rating { font-size: 11px; color: var(--text2); display: flex; align-items: center; gap: 4px; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.section-animate { animation: fadeUp 0.5s ease forwards; opacity: 0; }
+.section-animate:nth-child(1){animation-delay:0.05s} .section-animate:nth-child(2){animation-delay:0.12s}
+.section-animate:nth-child(3){animation-delay:0.19s} .section-animate:nth-child(4){animation-delay:0.26s}
+.section-animate:nth-child(5){animation-delay:0.33s} .section-animate:nth-child(6){animation-delay:0.40s}
+.section-animate:nth-child(7){animation-delay:0.47s}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: rgba(30,20,50,0.95); border: 1px solid rgba(168,85,247,0.3);
+  backdrop-filter: blur(16px); border-radius: 99px; padding: 10px 20px;
+  font-size: 13px; font-weight: 500; color: var(--text);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(168,85,247,0.15);
+  z-index: 300; opacity: 0; transition: all 0.3s ease; white-space: nowrap; max-width: 90vw; text-align:center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── DISH MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+  z-index: 400; display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-sheet {
+  width: 100%; max-height: 90vh; background: var(--bg2);
+  border-radius: var(--r-xl) var(--r-xl) 0 0; border-top: 1px solid var(--border);
+  overflow-y: auto; transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); padding-bottom: 32px;
+}
+.modal-overlay.open .modal-sheet { transform: translateY(0); }
+.modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 99px; margin: 12px auto 20px; }
+.modal-img { height: 220px; width: 100%; object-fit: cover; }
+.modal-content { padding: 20px; }
+.modal-name { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.modal-desc { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 16px; }
+.modal-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.modal-rating-big { display: flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 600; }
+.modal-price-big { font-size: 24px; font-weight: 800; color: var(--gold); }
+.modal-reviews { margin-bottom: 20px; }
+.modal-reviews-title { font-size: 13px; font-weight: 700; color: var(--text2); margin-bottom: 10px; }
+.review-item { display: flex; gap: 10px; margin-bottom: 12px; padding: 10px; border-radius: var(--r-sm); background: var(--glass); border: 1px solid var(--border); }
+.review-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--purple), var(--orange)); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.review-author { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+.review-comment { font-size: 12px; color: var(--text2); line-height: 1.4; }
+.modal-add-btn {
+  width: 100%; padding: 16px; border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--purple), #7c3aed); color: #fff;
+  font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.3px;
+  box-shadow: 0 8px 24px rgba(168,85,247,0.35); transition: all 0.2s; margin-top: 16px;
+}
+.modal-add-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(168,85,247,0.5); }
+.modal-add-btn:active { transform: scale(0.97); }
+
+/* ── COMMENT SYSTEM ── */
+.comment-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+.comment-section-title { font-size: 14px; font-weight: 700; color: var(--text2); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+.comment-input-wrap {
+  display: flex; flex-direction: column; gap: 10px;
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 12px; transition: border-color 0.3s, box-shadow 0.3s; margin-bottom: 14px;
+}
+.comment-input-wrap:focus-within { border-color: var(--border-glow); box-shadow: 0 0 0 3px rgba(168,85,247,0.08); }
+.comment-name-input, .comment-text-input { background: transparent; border: none; outline: none; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; resize: none; }
+.comment-name-input { font-weight: 600; }
+.comment-name-input::placeholder, .comment-text-input::placeholder { color: var(--text3); }
+.comment-text-input { min-height: 60px; line-height: 1.5; }
+.comment-divider { height: 1px; background: var(--border); }
+.comment-submit-btn { align-self: flex-end; padding: 7px 18px; border-radius: 99px; background: linear-gradient(135deg, var(--purple), #7c3aed); color: #fff; font-size: 12px; font-weight: 700; box-shadow: 0 4px 12px rgba(168,85,247,0.35); transition: all 0.2s; }
+.comment-submit-btn:hover { transform: scale(1.04); }
+.comment-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.comment-list { display: flex; flex-direction: column; gap: 10px; }
+.comment-bubble { display: flex; gap: 10px; background: var(--glass); border: 1px solid var(--border); border-radius: var(--r-md); padding: 12px; animation: fadeUp 0.3s ease forwards; }
+.comment-bubble-avatar { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--orange), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; }
+.comment-bubble-name { font-size: 12px; font-weight: 700; color: var(--purple); margin-bottom: 3px; }
+.comment-bubble-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.comment-bubble-time { font-size: 10px; color: var(--text3); margin-top: 4px; }
+.comment-loading, .no-comments { text-align: center; padding: 16px; font-size: 12px; color: var(--text3); }
+.index-link { color: var(--purple); font-size: 11px; display:block; margin-top:6px; text-decoration:underline; }
+
+/* ── CART PANEL ── */
+.cart-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(12px); z-index: 500; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
+.cart-panel-overlay.open { opacity: 1; pointer-events: all; }
+.cart-panel {
+  position: fixed; bottom: 0; left: 0; right: 0; max-height: 96vh; background: var(--bg2);
+  border-radius: 28px 28px 0 0; border-top: 1px solid rgba(168,85,247,0.25); z-index: 501;
+  overflow-y: auto; transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.34,1.2,0.64,1); padding-bottom: 40px;
+  box-shadow: 0 -20px 80px rgba(168,85,247,0.15), 0 -4px 24px rgba(0,0,0,0.5);
+}
+.cart-panel-overlay.open .cart-panel { transform: translateY(0); }
+.cart-panel-handle { width: 44px; height: 4px; background: var(--border); border-radius: 99px; margin: 14px auto 0; }
+.cart-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 0; }
+.cart-panel-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; background: linear-gradient(135deg, var(--purple), var(--orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.cart-panel-close { width: 36px; height: 36px; border-radius: 50%; background: var(--glass2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.2s; }
+.cart-panel-close:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); }
+.cart-empty-state { text-align: center; padding: 60px 20px; }
+.cart-empty-icon { font-size: 56px; margin-bottom: 16px; }
+.cart-empty-text { font-size: 16px; font-weight: 600; color: var(--text2); }
+.cart-empty-sub { font-size: 13px; color: var(--text3); margin-top: 6px; }
+.cart-items-list { padding: 16px 20px 0; display: flex; flex-direction: column; gap: 12px; }
+.cart-item-card { background: var(--glass); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; animation: fadeUp 0.3s ease forwards; transition: border-color 0.2s; }
+.cart-item-card:hover { border-color: rgba(168,85,247,0.25); }
+.cart-item-top { display: flex; gap: 12px; padding: 12px; position: relative; }
+.cart-item-img { width: 72px; height: 72px; border-radius: var(--r-sm); overflow: hidden; flex-shrink: 0; }
+.cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cart-item-price-line { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.cart-item-unit-price { font-size: 13px; color: var(--gold); font-weight: 600; }
+.cart-item-subtotal { font-size: 12px; color: var(--text3); }
+.qty-control { display: inline-flex; align-items: center; background: var(--glass2); border: 1px solid var(--border); border-radius: 99px; overflow: hidden; }
+.qty-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--purple); transition: all 0.15s; }
+.qty-btn:hover { background: var(--purple-dim); }
+.qty-btn:active { transform: scale(0.85); }
+.qty-display { min-width: 28px; text-align: center; font-size: 14px; font-weight: 700; padding: 0 2px; }
+.cart-item-remove { position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; border-radius: 50%; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.25); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--red); transition: all 0.2s; cursor: pointer; }
+.cart-item-remove:hover { background: rgba(239,68,68,0.3); transform: scale(1.1); }
+.cooking-instructions { padding: 10px 12px 12px; border-top: 1px solid var(--border); }
+.cooking-label { font-size: 11px; font-weight: 600; color: var(--text3); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.spice-pills { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+.spice-pill { padding: 5px 12px; border-radius: 99px; border: 1px solid var(--border); background: var(--glass); font-size: 11px; font-weight: 600; color: var(--text2); cursor: pointer; transition: all 0.2s; }
+.spice-pill.selected-normal { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.4); color: var(--green); }
+.spice-pill.selected-medium { background: rgba(249,115,22,0.15); border-color: rgba(249,115,22,0.4); color: var(--orange); }
+.spice-pill.selected-spicy  { background: rgba(239,68,68,0.15);  border-color: rgba(239,68,68,0.4);  color: var(--red); }
+.custom-instruction-input { width: 100%; background: var(--glass); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 8px 12px; font-size: 12px; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; resize: none; transition: border-color 0.2s; }
+.custom-instruction-input::placeholder { color: var(--text3); }
+.custom-instruction-input:focus { border-color: var(--border-glow); }
+.order-summary-section { margin: 20px 20px 0; background: var(--glass); border: 1px solid rgba(168,85,247,0.2); border-radius: var(--r-lg); overflow: hidden; }
+.order-summary-header { padding: 14px 16px; background: rgba(168,85,247,0.08); border-bottom: 1px solid var(--border); font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+.summary-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text2); }
+.summary-row:last-child { border-bottom: none; }
+.summary-row.total { font-size: 16px; font-weight: 800; color: var(--text); padding: 14px 16px; }
+.summary-total-val { color: var(--gold); font-size: 18px; }
+.order-form-section { margin: 16px 20px 0; }
+.order-form-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.form-field { margin-bottom: 12px; }
+.form-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
+.form-input { width: 100%; background: var(--glass); border: 1px solid var(--border); border-radius: var(--r-md); padding: 12px 16px; font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; transition: border-color 0.3s, box-shadow 0.3s; }
+.form-input::placeholder { color: var(--text3); }
+.form-input:focus { border-color: var(--border-glow); box-shadow: 0 0 0 3px rgba(168,85,247,0.08); }
+.place-order-btn {
+  width: 100%; padding: 18px; border-radius: var(--r-lg);
+  background: linear-gradient(135deg, #EAB308 0%, #F97316 40%, #A855F7 100%);
+  color: #fff; font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: 0.5px;
+  box-shadow: 0 8px 32px rgba(249,115,22,0.35), 0 4px 16px rgba(168,85,247,0.25);
+  transition: all 0.2s; position: relative; overflow: hidden; margin-top: 20px;
+}
+.place-order-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent); }
+.place-order-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 48px rgba(249,115,22,0.45); }
+.place-order-btn:active { transform: scale(0.97); }
+.place-order-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.delivery-strip { display: flex; align-items: center; gap: 8px; margin: 12px 20px 0; padding: 10px 14px; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: var(--r-md); font-size: 12px; color: var(--green); }
+.cart-section-divider { height: 1px; background: var(--border); margin: 20px 20px 0; }
+/* Customer info strip in cart */
+.customer-info-strip {
+  display: flex; align-items: center; gap: 10px; margin: 12px 20px 0;
+  padding: 12px 16px; background: rgba(168,85,247,0.08);
+  border: 1px solid rgba(168,85,247,0.2); border-radius: var(--r-md);
+}
+.customer-info-strip-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--orange)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+.customer-info-name { font-size: 13px; font-weight: 700; }
+.customer-info-phone { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+/* ── ORDER SUCCESS ── */
+.order-success-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 600;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.4s; flex-direction: column; padding: 40px;
+}
+.order-success-overlay.show { opacity: 1; pointer-events: all; }
+.success-icon { font-size: 72px; animation: success-bounce 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards; transform: scale(0); margin-bottom: 20px; }
+@keyframes success-bounce { from{transform:scale(0) rotate(-15deg)} to{transform:scale(1) rotate(0deg)} }
+.success-title { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; text-align: center; background: linear-gradient(135deg, var(--gold), var(--orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; }
+.success-sub { font-size: 14px; color: var(--text2); text-align: center; line-height: 1.6; margin-bottom: 20px; }
+.success-order-id { background: var(--glass2); border: 1px solid var(--border); border-radius: var(--r-md); padding: 12px 20px; font-size: 13px; color: var(--text2); text-align: center; margin-bottom: 16px; font-family: monospace; }
+.success-order-id strong { color: var(--purple); font-size: 15px; }
+
+/* ── 15 MIN COUNTDOWN TIMER ── */
+.countdown-wrap {
+  width: 100%; background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3);
+  border-radius: var(--r-lg); padding: 18px 20px; margin-bottom: 24px; text-align: center; position: relative; overflow: hidden;
+}
+.countdown-wrap::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(168,85,247,0.05), rgba(249,115,22,0.05));
+  pointer-events: none;
+}
+.countdown-label { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+.countdown-timer-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.countdown-block { text-align: center; }
+.countdown-digits {
+  font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800; line-height: 1;
+  background: linear-gradient(135deg, var(--purple), var(--orange));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  min-width: 56px; display: block;
+}
+.countdown-unit { font-size: 10px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+.countdown-colon { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--purple); line-height: 1; opacity: 0.6; animation: colon-blink 1s step-end infinite; }
+@keyframes colon-blink { 0%,50%{opacity:0.6} 51%,100%{opacity:0.15} }
+.countdown-progress-bar { height: 4px; background: var(--border); border-radius: 99px; margin-top: 14px; overflow: hidden; }
+.countdown-progress-fill { height: 100%; background: linear-gradient(90deg, var(--purple), var(--orange)); border-radius: 99px; transition: width 1s linear; }
+.countdown-status { font-size: 12px; color: var(--text2); margin-top: 10px; }
+
+.success-close-btn { padding: 14px 36px; border-radius: 99px; background: linear-gradient(135deg, var(--purple), #7c3aed); color: #fff; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; box-shadow: 0 8px 24px rgba(168,85,247,0.35); transition: all 0.2s; }
+.success-close-btn:hover { transform: scale(1.04); }
+.success-glow { position: absolute; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(168,85,247,0.2), transparent 70%); animation: success-glow-pulse 2s ease-in-out infinite; pointer-events: none; }
+@keyframes success-glow-pulse { 0%,100%{transform:scale(1);opacity:0.6} 50%{transform:scale(1.4);opacity:0.3} }
+.confetti-particle { position: fixed; width: 8px; height: 8px; border-radius: 2px; pointer-events: none; z-index: 700; animation: confetti-fall 2s ease-out forwards; }
+@keyframes confetti-fall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+
+/* ── SEED BUTTON ── */
+.seed-wrap { display:flex; justify-content:center; padding: 0 20px 16px; }
+.seed-btn { display:flex; align-items:center; gap:8px; padding:10px 22px; border-radius:99px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); color:var(--green); font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.seed-btn:hover { background:rgba(34,197,94,0.18); transform:scale(1.03); }
+.seed-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════ CUSTOMER GATE (QR Scan Entry) ════════════════ -->
+<div class="customer-gate" id="customerGate">
+  <div class="gate-card">
+    <div class="gate-logo">NØVA</div>
+    <div class="gate-subtitle">Premium Food Experience · Koregaon Park, Pune</div>
+    <div class="gate-welcome">🎉 Swagat Hai Aapka!</div>
+    <div class="gate-desc">Order place karne ke liye pehle apni details bharein. Ye sirf ek baar karna hai.</div>
+
+    <div class="gate-field">
+      <label class="gate-label">Aapka Poora Naam *</label>
+      <input class="gate-input" id="gateName" type="text" placeholder="Naam likhein..." autocomplete="name" />
+    </div>
+    <div class="gate-field">
+      <label class="gate-label">Phone Number *</label>
+      <input class="gate-input" id="gatePhone" type="tel" placeholder="+91 XXXXX XXXXX" maxlength="13" autocomplete="tel" />
+    </div>
+
+    <button class="gate-btn" onclick="enterApp()">Menu Dekhein 🍽️</button>
+
+    <div class="gate-table-info" id="gateTableInfo">
+      🪑 Table — <span id="gateTableNum">Scan se detect ho raha hai...</span>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════ ORDER SUCCESS + COUNTDOWN ════════════════ -->
+<div class="order-success-overlay" id="orderSuccessOverlay">
+  <div class="success-glow"></div>
+  <div class="success-icon" id="successIcon">🎉</div>
+  <div class="success-title">Order Place Ho Gaya!</div>
+  <div class="success-sub" id="successSubText">Aapka khana tayar ho raha hai!<br>Ek amazing experience ke liye tayyar rahe! 🍽️</div>
+  <div class="success-order-id">Order ID: <strong id="successOrderId">NOVA-XXXX</strong></div>
+
+  <!-- 15 MINUTE COUNTDOWN -->
+  <div class="countdown-wrap">
+    <div class="countdown-label">⏱️ Estimated Delivery Time</div>
+    <div class="countdown-timer-row">
+      <div class="countdown-block">
+        <span class="countdown-digits" id="cdMinutes">15</span>
+        <div class="countdown-unit">Minutes</div>
+      </div>
+      <div class="countdown-colon">:</div>
+      <div class="countdown-block">
+        <span class="countdown-digits" id="cdSeconds">00</span>
+        <div class="countdown-unit">Seconds</div>
+      </div>
+    </div>
+    <div class="countdown-progress-bar">
+      <div class="countdown-progress-fill" id="cdProgress" style="width:100%"></div>
+    </div>
+    <div class="countdown-status" id="cdStatus">👨‍🍳 Chef ne order receive kar liya hai...</div>
+  </div>
+
+  <button class="success-close-btn" onclick="closeOrderSuccess()">Menu Par Wapas Jao 🏠</button>
+</div>
+
+<!-- DISH MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalBg(event)">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-handle"></div>
+    <img class="modal-img" id="modalImg" src="" alt="" />
+    <div class="modal-content">
+      <div class="modal-name" id="modalName"></div>
+      <div class="modal-meta">
+        <div class="modal-rating-big" id="modalRating"></div>
+        <div class="modal-price-big" id="modalPrice"></div>
+      </div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-reviews">
+        <div class="modal-reviews-title">⭐ Customer Reviews</div>
+        <div id="modalReviews"></div>
+      </div>
+      <div class="comment-section">
+        <div class="comment-section-title">💬 Comment Likhein</div>
+        <div class="comment-input-wrap">
+          <input class="comment-name-input" id="commentName" type="text" placeholder="Aapka naam..." maxlength="30" />
+          <div class="comment-divider"></div>
+          <textarea class="comment-text-input" id="commentText" placeholder="Is dish ke baare mein apna experience share karein..." rows="3" maxlength="200"></textarea>
+          <button class="comment-submit-btn" id="commentSubmitBtn" onclick="submitComment()">Post Comment ✨</button>
+        </div>
+        <div class="comment-section-title" style="margin-top:4px">🗨️ Sabke Comments</div>
+        <div id="commentList" class="comment-list">
+          <div class="comment-loading">⏳ Comments load ho rahe hain...</div>
+        </div>
+      </div>
+      <button class="modal-add-btn" onclick="addToCartFromModal()">Cart Mein Add Karein 🛒</button>
+    </div>
+  </div>
+</div>
+
+<!-- CART PANEL -->
+<div class="cart-panel-overlay" id="cartPanelOverlay" onclick="handleCartOverlayClick(event)">
+  <div class="cart-panel" id="cartPanel">
+    <div class="cart-panel-handle"></div>
+    <div class="cart-panel-header">
+      <div class="cart-panel-title">Aapka Order 🛍️</div>
+      <button class="cart-panel-close" onclick="closeCartPanel()">✕</button>
+    </div>
+    <div id="cartContent"></div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-logo">NØVA</div>
+  <div class="header-right">
+    <div class="fb-badge connecting" id="fbBadge">
+      <div class="fb-dot"></div>
+      <span id="fbBadgeText">Firebase...</span>
+    </div>
+    <div class="header-notif">🔔<div class="notif-dot"></div></div>
+    <div class="header-avatar" id="headerAvatar">?</div>
+  </div>
+</header>
+
+<!-- LOCATION -->
+<div class="location-bar">
+  <span style="font-size:14px">📍</span>
+  <div class="loc-text">Delivering to <strong>Koregaon Park, Pune</strong></div>
+  <div class="loc-arrow">▾</div>
+</div>
+
+<main>
+<div class="search-wrap section-animate">
+  <div class="search-inner">
+    <span class="search-icon">✦</span>
+    <input class="search-input" type="text" placeholder="Dishes, cuisines search karein..." id="searchInput" />
+    <div class="search-filter">⚙</div>
+  </div>
+</div>
+
+<div class="section-animate">
+  <div class="sec-header">
+    <div class="sec-title">🎯 Featured</div>
+    <div class="sec-link">See all ›</div>
+  </div>
+  <div class="ads-track-wrap">
+    <div class="ads-track" id="adsTrack"></div>
+    <div class="carousel-dots" id="carouselDots"></div>
+  </div>
+</div>
+
+<div class="promo-banner section-animate">
+  <div class="promo-icon">⚡</div>
+  <div class="promo-text">
+    <div class="promo-title">Pehle Order Pe Free Delivery</div>
+    <div class="promo-sub">Checkout pe use karein · Min ₹299</div>
+  </div>
+  <div class="promo-code" onclick="copyPromo(this)">NOVA1ST</div>
+</div>
+
+<div class="section-animate">
+  <div class="sec-header">
+    <div class="sec-title">🔥 Hot Deals</div>
+    <div class="sec-link">View all ›</div>
+  </div>
+  <div class="offers-track" id="offersTrack"></div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-animate">
+  <div class="sec-header">
+    <div class="sec-title">👨‍🍳 Chef's Picks</div>
+    <div class="sec-link">More ›</div>
+  </div>
+  <div class="chef-picks" id="chefPicks"></div>
+</div>
+
+<div class="divider"></div>
+
+<div class="seed-wrap section-animate" id="seedWrap" style="display:none">
+  <button class="seed-btn" id="seedBtn" onclick="seedMenu()">
+    🌱 Firebase Mein Menu Data Upload Karein
+  </button>
+</div>
+
+<div class="section-animate">
+  <div class="sec-header"><div class="sec-title">🍽 Full Menu</div></div>
+  <div class="cat-pills" id="catPills"></div>
+</div>
+
+<div id="menuSections" class="section-animate"></div>
+</main>
+
+<nav class="bottom-nav">
+  <div class="nav-item active" onclick="setNav(this)"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+  <div class="nav-item" onclick="setNav(this)"><div class="nav-icon">🔍</div><div class="nav-label">Explore</div></div>
+  <div class="nav-item" onclick="setNav(this)"><div class="nav-icon">🎁</div><div class="nav-label">Offers</div></div>
+  <div class="nav-item" onclick="setNav(this)"><div class="nav-icon">🛍</div><div class="nav-label">Orders</div></div>
+  <div class="nav-item" onclick="setNav(this)"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></div>
+</nav>
+
+<div class="order-btn-wrap">
+  <button class="order-btn" id="orderBtn" onclick="viewCart()">
+    <div class="order-btn-pulse"></div>
+    <span>🛒</span><span>Order Now</span>
+    <span class="cart-count" id="cartCount">0</span>
+  </button>
+</div>
+
+<!-- ═══════════════════ FIREBASE MODULE ═══════════════════ -->
+<script type="module">
+import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, getDocs, addDoc,
+  setDoc, doc, query, where, orderBy,
+  onSnapshot, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyBsRxWD2R1GkSEM-duLwQe3jAi7yw5vvvM",
+  authDomain:        "restaurant-system-beec1.firebaseapp.com",
+  projectId:         "restaurant-system-beec1",
+  storageBucket:     "restaurant-system-beec1.firebasestorage.app",
+  messagingSenderId: "106757122327",
+  appId:             "1:106757122327:web:723d8dacbba3087b686f52",
+  measurementId:     "G-5MQHDVS4TN"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+window.__db                = db;
+window.__col               = collection;
+window.__addDoc            = addDoc;
+window.__setDoc            = setDoc;
+window.__doc               = doc;
+window.__query             = query;
+window.__where             = where;
+window.__orderBy           = orderBy;
+window.__onSnapshot        = onSnapshot;
+window.__serverTimestamp   = serverTimestamp;
+window.__getDocs           = getDocs;
+
+window.__loadMenu = async function () {
+  setFbBadge('connecting', 'Connecting...');
+  try {
+    const snap = await getDocs(collection(db, "menu"));
+    if (!snap.empty) {
+      const cats = [];
+      snap.forEach(d => cats.push(d.data()));
+      cats.sort((a, b) => (a.order || 0) - (b.order || 0));
+      window.APP_DATA.categories = cats;
+      setFbBadge('connected', '● Firebase Live');
+      document.getElementById('seedWrap').style.display = 'none';
+      setTimeout(() => { const b = document.getElementById('fbBadge'); if(b) b.style.opacity='0.5'; }, 4000);
+    } else {
+      setFbBadge('connected', '● Connected');
+      document.getElementById('seedWrap').style.display = 'flex';
+    }
+  } catch (err) {
+    console.error('Firestore menu load error:', err);
+    setFbBadge('error', '✕ Offline');
+  }
+  renderMenu('all');
+};
+
+window.__seedMenu = async function () {
+  const cats = window.APP_DATA.categories;
+  for (let i = 0; i < cats.length; i++) {
+    await setDoc(doc(db, "menu", cats[i].id), { ...cats[i], order: i });
+  }
+  return cats.length;
+};
+
+window.dispatchEvent(new CustomEvent('fb-ready'));
+</script>
+
+<!-- ═══════════════════ MAIN APP SCRIPT ═══════════════════ -->
+<script>
+const IMG = {
+  butter_chicken: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=500&q=80',
+  biryani:        'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500&q=80',
+  pizza:          'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80',
+  sushi:          'https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=500&q=80',
+  burger:         'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80',
+  pasta:          'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&q=80',
+  tacos:          'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500&q=80',
+  ramen:          'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500&q=80',
+  steak:          'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&q=80',
+  dessert:        'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&q=80',
+  salad:          'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80',
+  noodles:        'https://images.unsplash.com/photo-1555126634-323283e090fa?w=500&q=80',
+  dal:            'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&q=80',
+  paneer:         'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&q=80',
+  cake:           'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&q=80',
+  icecream:       'https://images.unsplash.com/photo-1629385701021-fcd568a743e8?w=500&q=80',
+  samosa:         'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&q=80',
+  springroll:     'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=500&q=80',
+  soup:           'https://images.unsplash.com/photo-1547592180-85f173990554?w=500&q=80',
+  wings:          'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=500&q=80',
+};
+
+window.APP_DATA = {
+  ads: [
+    {id:'a1',name:'Royal Butter Chicken',caption:'Slow-cooked in tandoor, 8 spices',rating:4.9,price:'₹320',offer:'Chef Special',image:IMG.butter_chicken},
+    {id:'a2',name:'Hyderabadi Dum Biryani',caption:'Aged basmati, saffron & fried onions',rating:4.8,price:'₹280',offer:'Top Rated',image:IMG.biryani},
+    {id:'a3',name:'Neapolitan Wood-Fire Pizza',caption:'San Marzano tomatoes, Fior di latte',rating:4.7,price:'₹390',offer:'Trending',image:IMG.pizza},
+    {id:'a4',name:'Omakase Sushi Platter',caption:'Premium nigiri & maki selection',rating:4.9,price:'₹850',offer:'Premium',image:IMG.sushi},
+    {id:'a5',name:'Wagyu Smash Burger',caption:'A5 wagyu blend, truffle aioli',rating:4.8,price:'₹550',offer:'New',image:IMG.burger},
+    {id:'a6',name:'Truffle Pasta Carbonara',caption:'Pecorino, guanciale & black truffle',rating:4.7,price:'₹420',offer:'Bestseller',image:IMG.pasta},
+    {id:'a7',name:'Korean BBQ Tacos',caption:'Bulgogi, kimchi slaw, gochujang',rating:4.6,price:'₹310',offer:'Hot 🔥',image:IMG.tacos},
+    {id:'a8',name:'Tonkotsu Black Ramen',caption:'48hr pork broth, soft-boiled egg',rating:4.8,price:'₹380',offer:'Fan Fav',image:IMG.ramen},
+    {id:'a9',name:'Wagyu Ribeye Steak',caption:'250g A5 wagyu, herb butter, jus',rating:4.9,price:'₹1,200',offer:'Luxury',image:IMG.steak},
+    {id:'a10',name:'Valrhona Lava Cake',caption:'Dark chocolate 70%, vanilla bean ice cream',rating:4.7,price:'₹260',offer:'Must Try',image:IMG.cake},
+  ],
+  offers: [
+    {id:'o1',name:'Butter Chicken',price:'₹320',original:'₹640',offer:'50% OFF',image:IMG.butter_chicken},
+    {id:'o2',name:'Veg Biryani',price:'₹180',original:'₹300',offer:'40% OFF',image:IMG.biryani},
+    {id:'o3',name:'BBQ Pizza',price:'₹299',original:'₹500',offer:'Buy 1 Get 1',image:IMG.pizza},
+    {id:'o4',name:'Ramen Bowl',price:'₹249',original:'₹380',offer:'35% OFF',image:IMG.ramen},
+    {id:'o5',name:'Choco Lava Cake',price:'₹149',original:'₹260',offer:'FREE Dessert',image:IMG.cake},
+  ],
+  chefPicks: [
+    {id:'cp1',name:'Saffron Risotto',price:'₹480',rating:'4.9',image:IMG.pasta,desc:'Carnaroli rice, Parmigiano-Reggiano 36-month'},
+    {id:'cp2',name:'Miso Black Cod',price:'₹720',rating:'4.8',image:IMG.sushi,desc:'Nobu-style 3-day marinated black cod'},
+    {id:'cp3',name:'Dal Makhani Black',price:'₹280',rating:'4.9',image:IMG.dal,desc:'Overnight slow-cooked, cream & butter finish'},
+    {id:'cp4',name:'Sticky Toffee Pudding',price:'₹220',rating:'4.7',image:IMG.dessert,desc:'Medjool dates, butterscotch, vanilla bean cream'},
+  ],
+  categories: [
+    { id:'starters', name:'Starters', emoji:'🥗', order:0, dishes:[
+      {id:'s1',name:'Crispy Calamari',price:'₹290',rating:'4.7',desc:'Lemon aioli, pickled jalapeño',image:IMG.springroll,veg:false,offer:null,reviews:['Perfect texture!','Best appetizer ever.']},
+      {id:'s2',name:'Burrata & Heirloom',price:'₹350',rating:'4.8',desc:'Cherry tomatoes, basil oil, sea salt',image:IMG.salad,veg:true,offer:'30% OFF',reviews:['Absolutely fresh!','Creamy & delicious.']},
+      {id:'s3',name:'Chicken Wings',price:'₹320',rating:'4.6',desc:'Korean BBQ glaze, sesame, scallion',image:IMG.wings,veg:false,offer:null,reviews:['Amazing sauce!','Super crispy.']},
+      {id:'s4',name:'Truffle Soup',price:'₹380',rating:'4.9',desc:'Black truffle velouté, crème fraîche',image:IMG.soup,veg:true,offer:'Chef Pick',reviews:['Luxurious flavor!','Velvety perfection.']},
+      {id:'s5',name:'Pulled Jackfruit Tacos',price:'₹260',rating:'4.5',desc:'Smoked jackfruit, avocado, salsa verde',image:IMG.tacos,veg:true,offer:null,reviews:['Smoky & amazing!','Great veg option.']},
+      {id:'s6',name:'Spiced Samosa Trio',price:'₹180',rating:'4.4',desc:'Potato & pea, mint chutney',image:IMG.samosa,veg:true,offer:'2 for ₹300',reviews:['Classic done right!','Crispy & hot.']},
+    ]},
+    { id:'mains', name:'Main Course', emoji:'🍛', order:1, dishes:[
+      {id:'m1',name:'Butter Chicken Royal',price:'₹380',rating:'4.9',desc:'Slow-cooked tomato gravy, butter naan',image:IMG.butter_chicken,veg:false,offer:'Bestseller',reviews:['Best butter chicken!','Rich & creamy gravy.']},
+      {id:'m2',name:'Paneer Tikka Masala',price:'₹320',rating:'4.8',desc:'Charred paneer, spiced masala, basmati',image:IMG.paneer,veg:true,offer:null,reviews:['Perfect spice level!','Loved the paneer.']},
+      {id:'m3',name:'Hyderabadi Biryani',price:'₹380',rating:'4.8',desc:'Dum-cooked, saffron, fried onions, raita',image:IMG.biryani,veg:false,offer:'50% OFF',reviews:['Authentic taste!','Fragrant & perfect.']},
+      {id:'m4',name:'Wagyu Ribeye 250g',price:'₹1,200',rating:'4.9',desc:'A5 grade, herb butter, bordelaise jus',image:IMG.steak,veg:false,offer:'Premium',reviews:['Melt in mouth!','Worth every rupee.']},
+      {id:'m5',name:'Truffle Pasta',price:'₹480',rating:'4.7',desc:'Fresh tagliatelle, black truffle, parmesan',image:IMG.pasta,veg:true,offer:null,reviews:['Rich & indulgent!','Truffle aroma was intense.']},
+      {id:'m6',name:'Dal Makhani Black',price:'₹280',rating:'4.9',desc:'Overnight slow-cooked, cream finish',image:IMG.dal,veg:true,offer:'Chef Fav',reviews:['Soul food!','Perfect consistency.']},
+    ]},
+    { id:'noodles', name:'Noodles & Ramen', emoji:'🍜', order:2, dishes:[
+      {id:'n1',name:'Tonkotsu Black Ramen',price:'₹420',rating:'4.8',desc:'48hr pork broth, chashu, soft egg',image:IMG.ramen,veg:false,offer:'Fan Fav',reviews:['Incredible broth!','Authentic Tokyo style.']},
+      {id:'n2',name:'Szechuan Noodles',price:'₹260',rating:'4.6',desc:'Dan dan sauce, bok choy, crispy peanuts',image:IMG.noodles,veg:true,offer:null,reviews:['Spicy & numbing!','Love the flavors.']},
+      {id:'n3',name:'Hakka Chow Mein',price:'₹240',rating:'4.5',desc:'Wok-tossed, vegetables, soy-ginger glaze',image:IMG.noodles,veg:true,offer:'30% OFF',reviews:['Perfectly wok-charred!','Great value.']},
+      {id:'n4',name:'Korean Spicy Udon',price:'₹350',rating:'4.7',desc:'Gochujang, mushrooms, fried tofu',image:IMG.ramen,veg:true,offer:null,reviews:['Umami bomb!','Best udon in Pune.']},
+    ]},
+    { id:'desserts', name:'Desserts', emoji:'🍰', order:3, dishes:[
+      {id:'d1',name:'Valrhona Lava Cake',price:'₹280',rating:'4.8',desc:'Dark chocolate 70%, vanilla bean scoop',image:IMG.cake,veg:true,offer:'Must Try',reviews:['Perfectly molten center!','Chocolate heaven.']},
+      {id:'d2',name:'Saffron Phirni',price:'₹180',rating:'4.7',desc:'Rose water, pistachio, silver leaf',image:IMG.dessert,veg:true,offer:null,reviews:['Subtle & elegant!','Perfect ending.']},
+      {id:'d3',name:'Mango Kulfi Bar',price:'₹150',rating:'4.6',desc:'Alphonso mango, cardamom, falooda',image:IMG.icecream,veg:true,offer:'Summer Special',reviews:['Refreshing!','Summer in a bite.']},
+      {id:'d4',name:'Tiramisu Classic',price:'₹320',rating:'4.8',desc:'Mascarpone, Kahlúa, Amaretti biscuits',image:IMG.dessert,veg:true,offer:null,reviews:['Authentic Italian!','Perfect coffee kick.']},
+      {id:'d5',name:'Gulab Jamun Soufflé',price:'₹240',rating:'4.9',desc:'Fusion rose sugar syrup, saffron cream',image:IMG.cake,veg:true,offer:'Chef Innovation',reviews:['Mind-blowing fusion!','Never had anything like this.']},
+      {id:'d6',name:'Exotic Ice Cream',price:'₹160',rating:'4.5',desc:'Yuzu, passionfruit, dark choco swirl',image:IMG.icecream,veg:true,offer:null,reviews:['Unique flavors!','So refreshing.']},
+    ]},
+  ]
+};
+
+/* ══════ STATE ══════ */
+let cartItems      = [];
+let currentAd      = 0;
+let activeCategory = 'all';
+let modalItem      = null;
+let currentDishId  = null;
+let commentUnsub   = null;
+let countdownInterval = null;
+let totalCountdownSec = 15 * 60; // 15 minutes
+
+/* Customer session state */
+let customerName  = '';
+let customerPhone = '';
+let tableNumber   = '';
+
+/* ══════ CUSTOMER GATE ══════ */
+(function detectTableFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const table  = params.get('table') || params.get('t') || params.get('mesa') || '';
+  tableNumber  = table;
+  const el = document.getElementById('gateTableNum');
+  if (el) el.textContent = table ? `Table ${table}` : 'Walk-in / Dine-in';
+})();
+
+function enterApp() {
+  const nameInput  = document.getElementById('gateName');
+  const phoneInput = document.getElementById('gatePhone');
+  const name       = nameInput.value.trim();
+  const phone      = phoneInput.value.trim();
+
+  if (!name) { nameInput.focus(); showGateToast('Apna naam likhein 👤'); return; }
+  if (!phone || phone.replace(/\D/g,'').length < 10) { phoneInput.focus(); showGateToast('Valid phone number likhein 📱'); return; }
+
+  customerName  = name;
+  customerPhone = phone;
+
+  /* Update header avatar */
+  const av = document.getElementById('headerAvatar');
+  if (av) av.textContent = name.charAt(0).toUpperCase() + (name.split(' ')[1]?.charAt(0).toUpperCase() || '');
+
+  /* Hide gate with animation */
+  const gate = document.getElementById('customerGate');
+  gate.classList.add('hide');
+  setTimeout(() => { gate.style.display = 'none'; }, 500);
+
+  showToast(`Swagat hai ${name}! 🎉 Menu enjoy karein`);
+}
+window.enterApp = enterApp;
+
+function showGateToast(msg) {
+  showToast(msg);
+}
+
+/* ══════ HELPERS ══════ */
+const parsePrice = s => parseInt((s || '').replace(/[^\d]/g, '')) || 0;
+
+function formatTime(ts) {
+  if (!ts) return 'abhi';
+  const d    = ts.toDate ? ts.toDate() : new Date(ts);
+  const diff = Date.now() - d.getTime();
+  if (diff < 60000)    return 'abhi';
+  if (diff < 3600000)  return `${Math.floor(diff / 60000)}m pehle`;
+  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h pehle`;
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+}
+
+function genOrderId() {
+  return 'NOVA-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+}
+
+function setFbBadge(type, text) {
+  const el = document.getElementById('fbBadge');
+  const tx = document.getElementById('fbBadgeText');
+  if (!el) return;
+  el.className = 'fb-badge ' + type;
+  tx.textContent = text;
+}
+window.setFbBadge = setFbBadge;
+
+/* ══════ SEED MENU ══════ */
+async function seedMenu() {
+  const btn = document.getElementById('seedBtn');
+  btn.disabled = true; btn.innerHTML = '⏳ Upload ho raha hai...';
+  try {
+    const n = await window.__seedMenu();
+    showToast(`✅ ${n} categories Firebase mein save ho gayi!`);
+    document.getElementById('seedWrap').style.display = 'none';
+    await window.__loadMenu();
+  } catch (e) {
+    console.error(e);
+    showToast('❌ Upload fail hua. Console check karein.');
+    btn.disabled = false; btn.innerHTML = '🌱 Dobara Try Karein';
+  }
+}
+window.seedMenu = seedMenu;
+
+/* ══════ ADS ══════ */
+function renderAds() {
+  const track = document.getElementById('adsTrack');
+  const dots  = document.getElementById('carouselDots');
+  const ads   = APP_DATA.ads;
+
+  track.innerHTML = ads.map((ad, i) => `
+    <div class="ad-card" onclick="openAdModal(${i})">
+      <div class="ad-img" style="background-image:url('${ad.image}')"></div>
+      <div class="ad-overlay"></div>
+      <div class="ad-badge">${ad.offer}</div>
+      <div class="ad-content">
+        <div class="ad-name">${ad.name}</div>
+        <div class="ad-caption">${ad.caption}</div>
+        <div class="ad-footer">
+          <div class="ad-rating">⭐ ${ad.rating}</div>
+          <div class="ad-price">${ad.price}</div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  dots.innerHTML = ads.map((_, i) =>
+    `<div class="dot ${i === 0 ? 'active' : ''}" id="dot-${i}"></div>`).join('');
+
+  setInterval(() => {
+    currentAd = (currentAd + 1) % ads.length;
+    const w = (track.querySelector('.ad-card')?.offsetWidth || 0) + 14;
+    track.scrollTo({ left: currentAd * w, behavior: 'smooth' });
+    updateDots();
+  }, 5000);
+
+  track.addEventListener('scroll', () => {
+    const w = (track.querySelector('.ad-card')?.offsetWidth || 1) + 14;
+    const i = Math.round(track.scrollLeft / w);
+    if (i !== currentAd) { currentAd = i; updateDots(); }
+  });
+}
+
+function updateDots() {
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentAd));
+}
+
+function openAdModal(i) {
+  const ad = APP_DATA.ads[i];
+  openModal({
+    id: 'ad_' + ad.id, name: ad.name, image: ad.image,
+    desc: `${ad.caption}. Featured as "${ad.offer}". Premium ingredients sourced daily.`,
+    rating: ad.rating, price: ad.price,
+    reviews: ['Absolutely incredible! 10/10', 'Ordered twice this week.', 'Best in Pune!']
+  });
+}
+window.openAdModal = openAdModal;
+
+/* ══════ OFFERS ══════ */
+function renderOffers() {
+  document.getElementById('offersTrack').innerHTML = APP_DATA.offers.map(o => `
+    <div class="offer-card" onclick="quickAddByName('${o.name}','${o.image}','${o.price}')">
+      <div class="offer-img-wrap">
+        <img src="${o.image}" alt="${o.name}" loading="lazy" />
+        <div class="offer-badge">${o.offer}</div>
+        <div class="offer-fire">🔥</div>
+      </div>
+      <div class="offer-info">
+        <div class="offer-name">${o.name}</div>
+        <div class="offer-price">${o.price} <span style="color:var(--text3);text-decoration:line-through;font-size:10px">${o.original}</span></div>
+      </div>
+    </div>`).join('');
+}
+
+/* ══════ CHEF PICKS ══════ */
+function renderChefPicks() {
+  document.getElementById('chefPicks').innerHTML = APP_DATA.chefPicks.map(c => `
+    <div class="chef-card" onclick='openModal(${JSON.stringify({
+      id:"cp_"+c.id, name:c.name, image:c.image,
+      desc:c.desc+". Executive chef ki signature dish.",
+      rating:c.rating, price:c.price,
+      reviews:["Outstanding!","Chef ka finest creation.","Must try!"]
+    })})'>
+      <div class="chef-img"><img src="${c.image}" alt="${c.name}" loading="lazy" /></div>
+      <div class="chef-info">
+        <div class="chef-badge">👨‍🍳 Chef's Pick</div>
+        <div class="chef-name">${c.name}</div>
+        <div class="chef-footer">
+          <div class="chef-price">${c.price}</div>
+          <div class="chef-rating">⭐ ${c.rating}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* ══════ PILLS ══════ */
+function renderPills() {
+  const all = [{ id: 'all', name: 'All', emoji: '🌟' },
+    ...APP_DATA.categories.map(c => ({ id: c.id, name: c.name, emoji: c.emoji }))];
+  document.getElementById('catPills').innerHTML = all.map((c, i) => `
+    <div class="pill ${i === 0 ? 'active' : ''}" onclick="filterCat(this,'${c.id}')">
+      <span>${c.emoji}</span>${c.name}
+    </div>`).join('');
+}
+
+function filterCat(el, catId) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  activeCategory = catId;
+  renderMenu(catId);
+  document.getElementById('menuSections').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+window.filterCat = filterCat;
+
+/* ══════ MENU ══════ */
+function renderMenu(filter = 'all') {
+  const cats = filter === 'all'
+    ? APP_DATA.categories
+    : APP_DATA.categories.filter(c => c.id === filter);
+  document.getElementById('menuSections').innerHTML = cats.map(cat => `
+    <div class="cat-section">
+      <div class="cat-section-title">${cat.emoji} ${cat.name}</div>
+      <div class="dish-grid">${(cat.dishes || []).map(d => dishCard(d)).join('')}</div>
+    </div>`).join('');
+}
+
+function dishCard(d) {
+  const stars   = starsHtml(d.rating);
+  const inCart  = cartQty(d.id);
+  const offerHtml = d.offer ? `<div class="dish-offer-tag">${d.offer}</div>` : '';
+  const revHtml   = d.reviews?.[0] ? `<div class="dish-review"><div class="review-text">"${d.reviews[0]}"</div></div>` : '';
+  const addBtn  = inCart > 0
+    ? `<div class="qty-control" style="transform:scale(0.85)">
+        <button class="qty-btn" onclick="event.stopPropagation();decQty('${d.id}')">−</button>
+        <span class="qty-display">${inCart}</span>
+        <button class="qty-btn" onclick="event.stopPropagation();incQtyById('${d.id}')">+</button>
+       </div>`
+    : `<button class="dish-add-btn" onclick="event.stopPropagation();quickAddDish('${d.id}')">+</button>`;
+
+  return `
+    <div class="dish-card" onclick="openDishModal('${d.id}')">
+      <div class="dish-img-wrap">
+        <img src="${d.image}" alt="${d.name}" loading="lazy" />
+        <div class="dish-veg-badge ${d.veg ? 'veg' : 'nonveg'}"></div>
+        ${offerHtml}
+      </div>
+      <div class="dish-info">
+        <div class="dish-name">${d.name}</div>
+        ${d.desc ? `<div class="dish-desc">${d.desc}</div>` : ''}
+        <div class="dish-footer">
+          <div>
+            <div class="dish-price">${d.price}</div>
+            <div class="dish-rating"><div class="stars">${stars}</div> ${d.rating}</div>
+          </div>
+          ${addBtn}
+        </div>
+      </div>
+      ${revHtml}
+    </div>`;
+}
+
+function starsHtml(r) {
+  const f = Math.floor(r); let h = '';
+  for (let i = 0; i < f; i++) h += '<span class="star">⭐</span>';
+  if (r % 1 >= 0.5) h += '<span class="star" style="opacity:0.6">⭐</span>';
+  return h;
+}
+
+/* ══════ DISH MODAL ══════ */
+const R_AUTHORS = ['Rohan K.', 'Priya M.', 'Arjun S.', 'Sneha T.', 'Dev P.', 'Ananya R.'];
+
+function openDishModal(id) {
+  let dish = null;
+  for (const cat of APP_DATA.categories) {
+    dish = cat.dishes?.find(d => d.id === id);
+    if (dish) break;
+  }
+  if (!dish) return;
+  openModal({
+    id: dish.id, name: dish.name, image: dish.image,
+    desc: dish.desc + '. Premium ingredients, expert chefs.',
+    rating: dish.rating, price: dish.price, reviews: dish.reviews || []
+  });
+}
+window.openDishModal = openDishModal;
+
+function openModal(item) {
+  modalItem     = item;
+  currentDishId = item.id;
+
+  document.getElementById('modalImg').src       = item.image;
+  document.getElementById('modalName').textContent = item.name;
+  document.getElementById('modalRating').innerHTML = `⭐ ${item.rating} <span style="color:var(--text3);font-size:12px;font-weight:400">(${Math.floor(Math.random()*200+50)} reviews)</span>`;
+  document.getElementById('modalPrice').textContent = item.price;
+  document.getElementById('modalDesc').textContent  = item.desc;
+  document.getElementById('modalReviews').innerHTML = (item.reviews || []).map((r, i) => `
+    <div class="review-item">
+      <div class="review-avatar">${R_AUTHORS[i % R_AUTHORS.length].charAt(0)}</div>
+      <div class="review-body">
+        <div class="review-author">${R_AUTHORS[i % R_AUTHORS.length]}</div>
+        <div class="review-comment">${r}</div>
+      </div>
+    </div>`).join('');
+
+  /* Pre-fill comment name from customer session */
+  const cnEl = document.getElementById('commentName');
+  if (cnEl && customerName) cnEl.value = customerName;
+  document.getElementById('commentText').value = '';
+  loadComments(item.id);
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+window.openModal = openModal;
+
+function closeModalBg(e) {
+  if (e.target === document.getElementById('modalOverlay')) _closeModal();
+}
+window.closeModalBg = closeModalBg;
+
+function _closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  if (commentUnsub) { commentUnsub(); commentUnsub = null; }
+  currentDishId = null;
+}
+
+function addToCartFromModal() {
+  _closeModal();
+  if (modalItem) addToCart({ id: modalItem.id, name: modalItem.name, image: modalItem.image, price: modalItem.price });
+}
+window.addToCartFromModal = addToCartFromModal;
+
+/* ══════ COMMENTS ══════ */
+function loadComments(dishId) {
+  const listEl = document.getElementById('commentList');
+  listEl.innerHTML = '<div class="comment-loading">⏳ Comments load ho rahe hain...</div>';
+  if (!window.__db) { listEl.innerHTML = '<div class="no-comments">🔌 Firebase se connect karein.</div>'; return; }
+  if (commentUnsub) commentUnsub();
+
+  try {
+    const q = window.__query(
+      window.__col(window.__db, 'dish_comments'),
+      window.__where('dishId', '==', dishId),
+      window.__orderBy('timestamp', 'desc')
+    );
+
+    commentUnsub = window.__onSnapshot(q, snap => {
+      if (snap.empty) {
+        listEl.innerHTML = '<div class="no-comments">🍽️ Abhi tak koi comment nahi. Pehle aap karein!</div>';
+        return;
+      }
+      listEl.innerHTML = snap.docs.map(doc => {
+        const c = doc.data();
+        return `<div class="comment-bubble">
+          <div class="comment-bubble-avatar">${(c.name || 'A').charAt(0).toUpperCase()}</div>
+          <div style="flex:1">
+            <div class="comment-bubble-name">${c.name || 'Anonymous'}</div>
+            <div class="comment-bubble-text">${c.text}</div>
+            <div class="comment-bubble-time">${formatTime(c.timestamp)}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }, err => {
+      const indexUrl = err.message?.match(/https:\/\/console\.firebase\.google\.com\/\S+/)?.[0];
+      if (indexUrl) {
+        listEl.innerHTML = `<div class="no-comments">
+          ⚠️ Ek Firestore index banana zaroori hai.<br>
+          <a class="index-link" href="${indexUrl}" target="_blank">👉 Yahan click karke index banao (1 min)</a>
+        </div>`;
+      } else {
+        listEl.innerHTML = '<div class="no-comments">Comments load nahi ho sake.</div>';
+      }
+    });
+  } catch (e) {
+    listEl.innerHTML = '<div class="no-comments">Comments setup error. Console check karein.</div>';
+  }
+}
+
+async function submitComment() {
+  const name = document.getElementById('commentName').value.trim();
+  const text = document.getElementById('commentText').value.trim();
+  if (!text) { showToast('Pehle comment likhein 💬'); return; }
+  if (!currentDishId) return;
+
+  const btn = document.getElementById('commentSubmitBtn');
+  btn.disabled = true; btn.textContent = 'Post ho raha hai...';
+  try {
+    await window.__addDoc(window.__col(window.__db, 'dish_comments'), {
+      dishId: currentDishId,
+      name:   name || customerName || 'Anonymous',
+      text,
+      timestamp: window.__serverTimestamp()
+    });
+    document.getElementById('commentText').value = '';
+    showToast('Comment post ho gaya! 🎉');
+  } catch (e) {
+    console.error(e);
+    showToast('Comment post nahi hua. Try again.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Post Comment ✨';
+  }
+}
+window.submitComment = submitComment;
+
+/* ══════ CART ══════ */
+const cartQty = id => (cartItems.find(i => i.id === id) || { qty: 0 }).qty;
+
+function quickAddDish(dishId) {
+  let dish = null;
+  for (const cat of APP_DATA.categories) { dish = cat.dishes?.find(d => d.id === dishId); if (dish) break; }
+  if (!dish) return;
+  addToCart({ id: dish.id, name: dish.name, image: dish.image, price: dish.price });
+  renderMenu(activeCategory);
+}
+window.quickAddDish = quickAddDish;
+
+function quickAddByName(name, image, price) {
+  addToCart({ id: 'offer_' + name.replace(/\s+/g, '_'), name, image, price });
+}
+window.quickAddByName = quickAddByName;
+
+function addToCart(item) {
+  const ex = cartItems.find(i => i.id === item.id);
+  if (ex) ex.qty++;
+  else cartItems.push({ ...item, priceNum: parsePrice(item.price), qty: 1, spice: 'normal', customNote: '' });
+  updateCartCount();
+  showToast(`${item.name} cart mein add hua! 🛒`);
+  bounceOrderBtn();
+}
+
+function incQtyById(id) {
+  const it = cartItems.find(i => i.id === id);
+  if (it) { it.qty++; updateCartCount(); renderMenu(activeCategory); }
+}
+window.incQtyById = incQtyById;
+
+function decQty(id) {
+  const idx = cartItems.findIndex(i => i.id === id); if (idx === -1) return;
+  cartItems[idx].qty--;
+  if (cartItems[idx].qty <= 0) cartItems.splice(idx, 1);
+  updateCartCount(); renderMenu(activeCategory);
+}
+window.decQty = decQty;
+
+function removeFromCart(id) {
+  cartItems = cartItems.filter(i => i.id !== id);
+  updateCartCount(); renderMenu(activeCategory); renderCartPanel();
+}
+window.removeFromCart = removeFromCart;
+
+function updateCartCount() {
+  document.getElementById('cartCount').textContent = cartItems.reduce((s, i) => s + i.qty, 0);
+}
+
+function bounceOrderBtn() {
+  const b = document.getElementById('orderBtn');
+  b.style.transform = 'scale(1.14)'; setTimeout(() => b.style.transform = '', 220);
+}
+
+const cartTotal = () => cartItems.reduce((s, i) => s + (i.priceNum * i.qty), 0);
+
+/* ══════ CART PANEL ══════ */
+function viewCart() {
+  if (!cartItems.length) { showToast('Cart khaali hai — kuch add karein! 🍽️'); return; }
+  renderCartPanel();
+  document.getElementById('cartPanelOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+window.viewCart = viewCart;
+
+function closeCartPanel() {
+  document.getElementById('cartPanelOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+window.closeCartPanel = closeCartPanel;
+
+function handleCartOverlayClick(e) {
+  if (e.target === document.getElementById('cartPanelOverlay')) closeCartPanel();
+}
+window.handleCartOverlayClick = handleCartOverlayClick;
+
+function renderCartPanel() {
+  const content = document.getElementById('cartContent');
+  if (!cartItems.length) {
+    content.innerHTML = `
+      <div class="cart-empty-state">
+        <div class="cart-empty-icon">🛒</div>
+        <div class="cart-empty-text">Cart khaali hai</div>
+        <div class="cart-empty-sub">Kuch delicious add karein</div>
+      </div>`;
+    return;
+  }
+
+  const sub = cartTotal();
+  const del = sub > 299 ? 0 : 49;
+  const tax = Math.round(sub * 0.05);
+  const tot = sub + del + tax;
+
+  /* Customer info strip */
+  const custStrip = customerName ? `
+    <div class="customer-info-strip">
+      <div class="customer-info-strip-avatar">${customerName.charAt(0).toUpperCase()}</div>
+      <div>
+        <div class="customer-info-name">${customerName}</div>
+        <div class="customer-info-phone">${customerPhone}${tableNumber ? ' · Table ' + tableNumber : ''}</div>
+      </div>
+    </div>` : '';
+
+  content.innerHTML = `
+    ${custStrip}
+    <div class="delivery-strip">🚴 ₹299 se upar FREE delivery · 30-40 min mein</div>
+    <div class="cart-items-list">
+      ${cartItems.map(item => `
+        <div class="cart-item-card">
+          <div class="cart-item-top">
+            <div class="cart-item-img"><img src="${item.image}" alt="${item.name}" /></div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-price-line">
+                <span class="cart-item-unit-price">${item.price}</span>
+                <span class="cart-item-subtotal">× ${item.qty} = ₹${item.priceNum * item.qty}</span>
+              </div>
+              <div class="qty-control">
+                <button class="qty-btn" onclick="cartDec('${item.id}')">−</button>
+                <span class="qty-display">${item.qty}</span>
+                <button class="qty-btn" onclick="cartInc('${item.id}')">+</button>
+              </div>
+            </div>
+            <button class="cart-item-remove" onclick="removeFromCart('${item.id}')">✕</button>
+          </div>
+          <div class="cooking-instructions">
+            <div class="cooking-label">🌶️ Spice Level</div>
+            <div class="spice-pills">
+              <div class="spice-pill ${item.spice==='normal'?'selected-normal':''}" onclick="setSpice('${item.id}','normal',this)">😊 Normal</div>
+              <div class="spice-pill ${item.spice==='medium'?'selected-medium':''}" onclick="setSpice('${item.id}','medium',this)">🌶️ Medium</div>
+              <div class="spice-pill ${item.spice==='spicy'?'selected-spicy':''}"  onclick="setSpice('${item.id}','spicy',this)">🔥 Spicy</div>
+            </div>
+            <textarea class="custom-instruction-input" rows="2" maxlength="100"
+              placeholder="Custom instruction (e.g. kam tel, pyaz nahi...)"
+              oninput="setNote('${item.id}',this.value)">${item.customNote}</textarea>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <div class="order-summary-section">
+      <div class="order-summary-header">📋 Bill Summary</div>
+      <div class="summary-row"><span>Items Total</span><span>₹${sub}</span></div>
+      <div class="summary-row"><span>Delivery</span><span>${sub > 299 ? '<span style="color:var(--green)">FREE</span>' : '₹' + del}</span></div>
+      <div class="summary-row"><span>Tax (5%)</span><span>₹${tax}</span></div>
+      <div class="summary-row total"><span>Total</span><span class="summary-total-val">₹${sub > 299 ? sub + tax : tot}</span></div>
+    </div>
+
+    <div class="cart-section-divider"></div>
+
+    <div class="order-form-section">
+      <div class="order-form-title">📝 Delivery Notes (Optional)</div>
+      <div class="form-field">
+        <label class="form-label">Koi Khaas Instructions</label>
+        <input class="form-input" id="orderNotes" type="text" placeholder="Jaldi chahiye, ya koi allergy..." />
+      </div>
+      <button class="place-order-btn" id="placeOrderBtn" onclick="placeOrder()">
+        🚀 Order Place Karein — ₹${sub > 299 ? sub + tax : tot}
+      </button>
+    </div>`;
+}
+
+function cartInc(id) {
+  const it = cartItems.find(i => i.id === id); if (!it) return;
+  it.qty++; renderCartPanel(); renderMenu(activeCategory);
+}
+window.cartInc = cartInc;
+
+function cartDec(id) {
+  const idx = cartItems.findIndex(i => i.id === id); if (idx === -1) return;
+  cartItems[idx].qty--;
+  if (cartItems[idx].qty <= 0) cartItems.splice(idx, 1);
+  updateCartCount(); renderCartPanel(); renderMenu(activeCategory);
+  if (!cartItems.length) closeCartPanel();
+}
+window.cartDec = cartDec;
+
+function setSpice(id, level, el) {
+  const it = cartItems.find(i => i.id === id); if (!it) return;
+  it.spice = level;
+  el.closest('.spice-pills').querySelectorAll('.spice-pill').forEach(p => p.className = 'spice-pill');
+  el.classList.add('selected-' + level);
+}
+window.setSpice = setSpice;
+
+function setNote(id, val) {
+  const it = cartItems.find(i => i.id === id); if (it) it.customNote = val;
+}
+window.setNote = setNote;
+
+/* ══════════════════════════════════════
+   PLACE ORDER → FIREBASE SAVE (FIXED)
+══════════════════════════════════════ */
+async function placeOrder() {
+  /* Gate check — customer must be logged in */
+  if (!customerName || !customerPhone) {
+    showToast('Pehle apni details bharein 👤');
+    closeCartPanel();
+    document.getElementById('customerGate').style.display = 'flex';
+    document.getElementById('customerGate').classList.remove('hide');
+    return;
+  }
+
+  const notes = document.getElementById('orderNotes')?.value.trim() || '';
+
+  const btn = document.getElementById('placeOrderBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Order place ho raha hai...'; }
+
+  const sub     = cartTotal();
+  const del     = sub > 299 ? 0 : 49;
+  const tax     = Math.round(sub * 0.05);
+  const tot     = sub > 299 ? sub + tax : sub + del + tax;
+  const orderId = genOrderId();
+
+  const orderData = {
+    orderId,
+    customerName,
+    customerPhone,
+    tableNumber:   tableNumber || 'walk-in',
+    notes,
+    items: cartItems.map(i => ({
+      id:                i.id,
+      name:              i.name,
+      price:             i.price,
+      priceNum:          i.priceNum,
+      qty:               i.qty,
+      spiceLevel:        i.spice,
+      customInstruction: i.customNote || ''
+    })),
+    subtotal:     sub,
+    deliveryFee:  del,
+    taxes:        tax,
+    totalAmount:  tot,
+    status:       'pending',
+    timestamp:    new Date().toISOString(),
+    source:       'qr_menu'
+  };
+
+  /* ── Save to Firestore 'orders' collection ── */
+  let savedToFirebase = false;
+  try {
+    if (window.__db && window.__addDoc && window.__col && window.__serverTimestamp) {
+      orderData.createdAt = window.__serverTimestamp();
+      const docRef = await window.__addDoc(window.__col(window.__db, 'orders'), orderData);
+      savedToFirebase = true;
+      console.log('✅ Order saved to Firebase orders collection. Doc ID:', docRef.id, 'Order ID:', orderId);
+    } else {
+      console.warn('⚠️ Firebase not ready, order saved locally only.');
+    }
+  } catch (e) {
+    console.error('❌ Firebase order save error:', e);
+    /* Continue anyway — show success to customer */
+  }
+
+  closeCartPanel();
+  document.body.style.overflow = '';
+  showOrderSuccess(orderId, savedToFirebase);
+  cartItems = [];
+  updateCartCount();
+  renderMenu(activeCategory);
+}
+window.placeOrder = placeOrder;
+
+/* ══════ ORDER SUCCESS + 15 MIN COUNTDOWN ══════ */
+function showOrderSuccess(orderId, savedOk) {
+  document.getElementById('successOrderId').textContent = orderId;
+  const subEl = document.getElementById('successSubText');
+  subEl.innerHTML = `Namaste <strong>${customerName}</strong>! 🙏<br>
+    Aapka khana tayar ho raha hai. 15 minute mein tayyar ho jayega! 🍽️${savedOk ? '<br><small style="color:var(--green);font-size:11px">✅ Firebase mein save ho gaya</small>' : ''}`;
+
+  const ov = document.getElementById('orderSuccessOverlay');
+  const ic = document.getElementById('successIcon');
+  ic.style.animation = 'none'; ic.offsetHeight; ic.style.animation = '';
+  ov.classList.add('show');
+  spawnConfetti();
+  startCountdown();
+}
+
+function startCountdown() {
+  if (countdownInterval) clearInterval(countdownInterval);
+
+  const TOTAL_SEC = 15 * 60; // 15 minutes
+  let remaining   = TOTAL_SEC;
+
+  const statusMessages = [
+    { at: TOTAL_SEC,      msg: '👨‍🍳 Chef ne order receive kar liya hai...' },
+    { at: TOTAL_SEC - 60, msg: '🔥 Khana pakna shuru ho gaya!' },
+    { at: TOTAL_SEC - 180,msg: '🍳 Sab kuch perfectly cook ho raha hai...' },
+    { at: TOTAL_SEC - 360,msg: '⏰ Thoda aur wait karein, almost ready!' },
+    { at: TOTAL_SEC - 540,msg: '🎉 Aapka khana almost tayyar hai!' },
+    { at: 120,             msg: '🚀 2 minute mein aapke paas aa raha hai!' },
+    { at: 30,              msg: '✨ Aapka order aa raha hai!' },
+    { at: 0,               msg: '🎊 Order deliver ho gaya! Enjoy karein!' },
+  ];
+
+  function tick() {
+    remaining = Math.max(0, remaining - 1);
+    const m = Math.floor(remaining / 60);
+    const s = remaining % 60;
+
+    document.getElementById('cdMinutes').textContent  = String(m).padStart(2, '0');
+    document.getElementById('cdSeconds').textContent  = String(s).padStart(2, '0');
+
+    const pct = (remaining / TOTAL_SEC) * 100;
+    document.getElementById('cdProgress').style.width = pct + '%';
+
+    /* Status message updates */
+    for (const sm of statusMessages) {
+      if (remaining <= sm.at) {
+        document.getElementById('cdStatus').textContent = sm.msg;
+        break;
+      }
+    }
+
+    if (remaining <= 0) {
+      clearInterval(countdownInterval);
+      countdownInterval = null;
+    }
+  }
+
+  tick();
+  countdownInterval = setInterval(tick, 1000);
+}
+
+function closeOrderSuccess() {
+  document.getElementById('orderSuccessOverlay').classList.remove('show');
+  if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+}
+window.closeOrderSuccess = closeOrderSuccess;
+
+function spawnConfetti() {
+  const cols = ['#A855F7', '#F97316', '#EAB308', '#22c55e', '#ef4444', '#3b82f6', '#ec4899'];
+  const shapes = ['50%', '2px', '50%', '2px', '50%'];
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-particle';
+    const size = 6 + Math.random() * 8;
+    el.style.cssText = `
+      left:${Math.random()*100}vw; top:-10px;
+      background:${cols[~~(Math.random()*cols.length)]};
+      animation-delay:${Math.random()*1.5}s;
+      animation-duration:${1.8+Math.random()*1.2}s;
+      width:${size}px; height:${size}px;
+      border-radius:${shapes[~~(Math.random()*shapes.length)]};
+      transform:rotate(${Math.random()*360}deg);
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+  }
+}
+
+/* ══════ UI UTILS ══════ */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2700);
+}
+
+function copyPromo(el) {
+  navigator.clipboard?.writeText(el.textContent).catch(() => {});
+  showToast('Promo code "NOVA1ST" copy ho gaya! 🎉');
+}
+window.copyPromo = copyPromo;
+
+function setNav(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+window.setNav = setNav;
+
+/* ══════ SEARCH ══════ */
+document.getElementById('searchInput').addEventListener('input', function () {
+  const q = this.value.toLowerCase().trim();
+  if (!q) { renderMenu(activeCategory); return; }
+  const filtered = [];
+  for (const cat of APP_DATA.categories) {
+    const matching = (cat.dishes || []).filter(d =>
+      d.name.toLowerCase().includes(q) || d.desc?.toLowerCase().includes(q));
+    if (matching.length) filtered.push({ ...cat, dishes: matching });
+  }
+  document.getElementById('menuSections').innerHTML = filtered.length
+    ? filtered.map(cat => `
+        <div class="cat-section">
+          <div class="cat-section-title">${cat.emoji} ${cat.name}</div>
+          <div class="dish-grid">${cat.dishes.map(d => dishCard(d)).join('')}</div>
+        </div>`).join('')
+    : `<div style="text-align:center;padding:40px 20px;color:var(--text3)">
+        <div style="font-size:40px;margin-bottom:12px">🍽</div>
+        <div style="font-size:14px">"${q}" ke liye koi dish nahi mili</div>
+      </div>`;
+});
+
+/* ══════ SHIMMER ══════ */
+function showShimmer() {
+  document.getElementById('adsTrack').innerHTML =
+    [1, 2, 3].map(() => `<div class="shimmer shimmer-card"></div>`).join('');
+}
+
+/* ══════ INIT ══════ */
+showShimmer();
+
+function initApp() {
+  renderAds();
+  renderOffers();
+  renderChefPicks();
+  renderPills();
+  if (window.__loadMenu) {
+    window.__loadMenu();
+  } else {
+    renderMenu('all');
+  }
+}
+
+window.addEventListener('fb-ready', initApp, { once: true });
+
+setTimeout(() => {
+  if (!window.__db) {
+    setFbBadge('error', '✕ Offline');
+    renderAds(); renderOffers(); renderChefPicks(); renderPills(); renderMenu('all');
+  }
+}, 5000);
+</script>
+</body>
+</html>
